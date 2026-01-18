@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Decoding Hand Gestures from Multichannel sEMG Signals}
+\author{Synapse : The NeuroTech Challenge}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Surface Electromyography (sEMG) signals capture the electrical activity of muscles preceding voluntary motion. Decoding these signals enables intuitive control of prosthetic devices. However, sEMG signals are inherently noisy, subject-dependent, and vary across recording sessions, making robust gesture classification a challenging task.
+
+This work presents a supervised machine learning pipeline for decoding discrete hand gestures from multichannel sEMG signals with a focus on generalization across subjects and recording sessions.
+
+\section{Dataset Description}
+The dataset consists of multichannel sEMG recordings collected from multiple subjects across three separate recording sessions. Each session contains subject-wise folders, and each subject folder contains multiple gesture trials stored as CSV files.
+
+Each CSV file corresponds to a single gesture trial and contains raw time-series sEMG data from eight forearm muscle channels. Gesture labels are encoded in the filenames, ranging from gesture00 to gesture04.
+
+\section{Signal Characteristics and Preprocessing}
+sEMG signals are susceptible to motion artifacts, power-line interference, and high-frequency noise. To mitigate these effects, a band-pass filter between 20–450 Hz was applied to each channel, which preserves the dominant muscle activation frequencies while removing unwanted noise components.
+
+Filtering was applied independently to each channel to retain spatial muscle activation patterns.
+
+\section{Feature Extraction}
+Instead of using raw signals directly, domain-specific features were extracted to improve robustness and interpretability. For each of the eight channels, the following time-domain features were computed:
+
+\begin{itemize}
+\item Root Mean Square (RMS): captures muscle contraction strength
+\item Mean Absolute Value (MAV): reflects overall activation intensity
+\item Waveform Length (WL): measures signal complexity and muscle activity variation
+\end{itemize}
+
+This results in a 24-dimensional feature vector per gesture trial.
+
+\section{Model Architecture}
+A Random Forest classifier was selected due to its robustness to noise, ability to model non-linear relationships, and low risk of overfitting on small-to-medium datasets. The model provides a strong balance between performance, interpretability, and computational efficiency.
+
+To ensure realistic evaluation, the model was trained using data from Session1 and Session2, while validation was performed exclusively on the unseen Session3.
+
+\section{Evaluation Metrics}
+Model performance was evaluated using classification accuracy and macro-averaged F1-score. Session-wise validation was intentionally chosen to assess generalization across recording days, reflecting real-world prosthetic deployment scenarios.
+
+\section{Results and Discussion}
+The proposed pipeline achieved consistent performance on the unseen validation session, demonstrating effective generalization across subjects and recording conditions. Emphasis was placed on avoiding data leakage and ensuring physiological plausibility rather than optimizing for inflated accuracy.
+
+\section{Conclusion}
+This work demonstrates that careful signal preprocessing, domain-aware feature extraction, and session-aware evaluation can yield robust gesture classification models for sEMG-based prosthetic control. The methodology prioritizes real-world reliability over superficial performance gains, making it suitable for practical neuroprosthetic applications.
+
+\end{document}
